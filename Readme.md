@@ -164,6 +164,11 @@ All incoming request bodies are validated using [Zod](https://zod.dev) before re
 - Users can only **delete** tasks they created
 
 ---
+## Scaling
+
+The application uses the **Node.js Cluster module** to take advantage of multi-core systems. A master process forks worker processes equal to the number of available CPU cores, allowing the server to handle more concurrent requests at the Node.js level without relying on external orchestration tools.
+
+--- 
 
 ## Tech Stack
 
