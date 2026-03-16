@@ -5,7 +5,7 @@ import { app } from "./index.js";
 const numcpu=os.cpus().length;
 const PORT=3000;
 
-if(cluster.isMaster){
+if(cluster.isPrimary){
     for(let i=0;i<numcpu;i++){
         cluster.fork();
     }
@@ -14,5 +14,5 @@ if(cluster.isMaster){
     cluster.fork();
   });
 }else{
-    app.listen(PORT);
+    app.listen(PORT,()=>{console.log("started")});
 }

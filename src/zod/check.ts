@@ -20,3 +20,17 @@ export const LoginValidation=z.object({
     email: z.email("Invalid email address"),
     password:passwordSchema
 })
+
+export const tasksvalidattion=z.object({
+    title: z.string()
+        .min(3, "Title must be at least 3 characters")
+        .max(100, "Title must be at most 100 characters"),
+
+    description: z.string()
+        .min(10, "Description must be at least 10 characters")
+        .max(500, "Description must be at most 500 characters"),
+
+    status: z.enum(["Todo","In-Progress","Done"], {
+        error: "Status must be pending, in-progress or completed"
+    })
+})

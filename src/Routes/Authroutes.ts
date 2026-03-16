@@ -9,12 +9,12 @@ export const Authrouter =Express.Router();
 const JWT_SECRET=process.env.JWT_SECRET;
 
 Authrouter.post("/register",async(req,res)=>{
+    try{
     const parseddata=UserValidataion.parse(req.body);
     const name=parseddata.name;
     const email=parseddata.email;
     const password=parseddata.password;
     const hashpassword= await bcrypt.hash(password,5);
-    try{
         const R=await UserModel.create({
             name,
             email,
@@ -35,24 +35,31 @@ Authrouter.post("/register",async(req,res)=>{
 })
 
 Authrouter.post("/login",async(req,res)=>{
+    try{
     const parseddata=LoginValidation.parse(req.body);
     const email=parseddata.email;
     const password=parseddata.password
-    try{
+
         const User=await UserModel.findOne({
             email:email
         })
+        if (!User) {
+            res.status(404).json({ message: "User not found" });
+            return;
+        }
         const founduser=await bcrypt.compare(password,User?.password as string);
 
+        if(founduser){
         const token=jwt.sign({
-            email:email
+            id:User?.id
         },JWT_SECRET as string);
 
-        localStorage.setItem("token",token);
+        // localStorage.setItem("token",token);
         return res.json({token});
+        }
         
     }catch(e){
-        console.error("there is some errror occured");
+        console.log(e);
         res.status(400).json({
             message:"Kuch toh gadbad hai daya"
         })

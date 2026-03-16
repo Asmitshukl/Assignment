@@ -1,0 +1,1 @@
+{"root":["./src/bin.ts","./src/index.ts","./src/Routes/Authroutes.ts","./src/Routes/Taskroutes.ts","./src/db/database.ts","./src/middleware/Authmiddleware.ts","./src/schema/TaskModel.ts","./src/schema/UserModels.ts","./src/types/express.d.ts","./src/zod/check.ts"],"version":"5.9.3"}
