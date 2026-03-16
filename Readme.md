@@ -13,8 +13,8 @@
 ```bash
 git clone https://github.com/Asmitshukl/Assignment.git
 cd Assignment
-code .
 cp .env.example .env
+code .
 ```
 > Fill in the required environment variables in `.env` as described in `.env.example`.
 ```bash
