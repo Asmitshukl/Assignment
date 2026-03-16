@@ -3,6 +3,8 @@ import Taskmodel from "../schema/TaskModel.js";
 import authmiddleware from "../middleware/Authmiddleware.js";
 import { tasksvalidattion } from "../zod/check.js";
 import mongoose from "mongoose";
+import { parse } from "node:path";
+import UserModels from "../schema/UserModels.js";
 export const TaskRouter = Express.Router();
 TaskRouter.use(authmiddleware);
 TaskRouter.post("/tasks", async (req, res) => {
@@ -16,11 +18,13 @@ TaskRouter.post("/tasks", async (req, res) => {
             return;
         }
         const task = await Taskmodel.create({
-            _id: new mongoose.Types.ObjectId(req.userid),
             Title: title,
             Description: description,
             status,
             user: new mongoose.Types.ObjectId(req.userid)
+        });
+        await UserModels.findByIdAndUpdate(req.userid, {
+            $push: { tasks: task._id }
         });
         return res.json({
             message: `task created ${task}`
@@ -74,8 +78,65 @@ TaskRouter.get("/tasks/:id", async (req, res) => {
         });
     }
 });
-TaskRouter.put("/tasks/:id", (req, res) => {
+TaskRouter.put("/tasks/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const task = await Taskmodel.findById(id);
+        if (!task) {
+            return res.json({
+                message: "Not available task"
+            });
+        }
+        if (task.user?.toString() !== req.userid) {
+            return res.json({
+                message: "not a valid user"
+            });
+        }
+        const parseddata = tasksvalidattion.partial().parse(req.body);
+        const Title = parseddata.title;
+        const Description = parseddata.description;
+        const status = parseddata.status;
+        const updatedtask = await Taskmodel.findByIdAndUpdate(id, {
+            Title,
+            Description,
+            status
+        });
+        return res.json({
+            message: "the changes have been made ",
+            task: updatedtask
+        });
+    }
+    catch (e) {
+        console.log(e);
+        return res.json({
+            message: "Kyun itna gadbad karte ho daya"
+        });
+    }
 });
-TaskRouter.delete("/tasks/:id", (req, res) => {
+TaskRouter.delete("/tasks/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const task = await Taskmodel.findById(id);
+        if (!task) {
+            return res.json({
+                message: "nothing founf"
+            });
+        }
+        if (task.user?.toString() !== req.userid) {
+            return res.json({
+                message: "invalid user"
+            });
+        }
+        const deleted = await Taskmodel.findByIdAndDelete(id);
+        return res.json({
+            message: `this task ${task} is deleted`
+        });
+    }
+    catch (e) {
+        console.log(e);
+        return res.json({
+            message: "There is some error"
+        });
+    }
 });
 //# sourceMappingURL=Taskroutes.js.map

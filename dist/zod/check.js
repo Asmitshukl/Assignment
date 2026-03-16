@@ -24,7 +24,7 @@ export const tasksvalidattion = z.object({
     description: z.string()
         .min(10, "Description must be at least 10 characters")
         .max(500, "Description must be at most 500 characters"),
-    status: z.enum(["Done", "Not Done"], {
+    status: z.enum(["Todo", "In-Progress", "Done"], {
         error: "Status must be pending, in-progress or completed"
     })
 });

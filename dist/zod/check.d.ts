@@ -12,8 +12,9 @@ export declare const tasksvalidattion: z.ZodObject<{
     title: z.ZodString;
     description: z.ZodString;
     status: z.ZodEnum<{
+        Todo: "Todo";
+        "In-Progress": "In-Progress";
         Done: "Done";
-        "Not Done": "Not Done";
     }>;
 }, z.core.$strip>;
 //# sourceMappingURL=check.d.ts.map
